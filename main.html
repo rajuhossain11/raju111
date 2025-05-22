@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Starbucks Digital Menu</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f3f1e7;
+    }
+    header {
+      background-color: #00704a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+    .categories {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 10px;
+      background-color: #e8f5e9;
+    }
+    .category {
+      background-color: #c8e6c9;
+      border: 2px solid #81c784;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-align: center;
+    }
+    .category:hover {
+      background-color: #a5d6a7;
+    }
+    .category img {
+      width: 60px;
+      height: 60px;
+      display: block;
+      margin: 0 auto 5px;
+    }
+    .items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .item {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .item-name {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .price {
+      color: #388e3c;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    .item button {
+      margin-top: 10px;
+      padding: 8px 15px;
+      background-color: #00704a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cart {
+      background-color:#ffffff;
+      padding:25px;
+      margin:30px auto;
+      max-width:500px;
+      border-radius:12px;
+      box-shadow:0 0 10px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .cart-item button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: red;
+      font-size: 16px;
+    }
+    input[type="text"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button.order-btn {
+      width:100%;
+      padding:12px;
+      background-color:#00704a;
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    footer {
+      background:#00704a;
+      color:white;
+      text-align:center;
+      padding:20px;
+      margin-top:40px;
+    }
+    @media (max-width: 600px) {
+      .categories {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .category {
+        flex: 0 0 auto;
+        margin: 10px;
+      }
+      .item img {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>Starbucks Digital Menu</header>
+
+  <div class="categories">
+    <div class="category" onclick="showItems('coffee')">
+      <img src="https://cdn-icons-png.freepik.com/256/7688/7688751.png?semt=ais_hybrid" alt="Coffee">
+      কফি
+    </div>
+    <div class="category" onclick="showItems('tea')">
+      <img src="https://www.freeiconspng.com/uploads/tea-cup-icon-0.png" alt="Tea">
+      চা
+    </div>
+    <div class="category" onclick="showItems('bakery')">
+      <img src="https://cdn-icons-png.flaticon.com/512/792/792771.png" alt="Bakery">
+      বেকারি
+    </div>
+    <div class="category" onclick="showItems('cake')">
+      <img src="https://img.freepik.com/free-psd/delicious-chocolate-birthday-cake-with-candles_632498-24980.jpg?semt=ais_hybrid&w=740" alt="Cake">
+      কেক
+    </div>
+  </div>
+
+  <div class="items" id="menuItems"></div>
+
+  <div class="cart" id="cart">
+    <h3 style="text-align:center; color:#00704a; font-size:22px; margin-bottom:20px;">🛒 আপনার কার্ট</h3>
+    <div id="cartItems" style="margin-bottom:15px;"></div>
+    <div id="cartTotal" style="text-align:right; font-weight:bold; font-size:18px; margin-bottom:20px;">মোট: 0 TK</div>
+
+    <input type="text" id="custName" placeholder="আপনার নাম" required>
+    <input type="tel" id="custPhone" placeholder="মোবাইল নম্বর" required>
+    <input type="text" id="custAddress" placeholder="ঠিকানা" required>
+
+    <button class="order-btn" onclick="sendCartOrder()">📦 WhatsApp-এ অর্ডার পাঠান</button>
+  </div>
+
+  <footer>
+    <h3>যোগাযোগ করুন</h3>
+    <p>মিঃ আমজাদ হোসেন</p>
+    <p>মোবাইল নাম্বারঃ ০১৮১২২৪৩২৬৩</p>
+  </footer>
+
+  <script>
+    const menu = {
+      coffee: [
+        { name: 'Coffee', price: 56, img: 'https://colombiancoffee.us/cdn/shop/articles/tips-to-recognize-good-quality-coffee-424970.png?v=1713377616&width=1024' },
+        { name: 'Orange Juice', price: 50, img: 'https://d1l0gza1nowsqe.cloudfront.net/wp-content/uploads/sites/4/2018/11/orange-juice-ThinkstockPhotos-487428380-1024x545.jpg' },
+        { name: 'Watermelon Juice', price: 35, img: 'https://res.cloudinary.com/peloton-cycle/image/fetch/c_fill,dpr_1.0,w_1200,h_630,x_0,y_236/f_auto/q_auto/https://images.ctfassets.net/6ilvqec50fal/4PRXCwLEif8hXTTG4pSL9T/add1849cf81a4f44868eaa8d1bb6edeb/watermelon-juice-benefits-01.jpg' },
+        { name: 'Dark Chocolate Iced Coffee', price: 75, img: 'https://lorcoffee.com/cdn/shop/articles/Dark-Chocolate-Ice-Coffee-with-Provocateur-exc.jpg?v=1675806078' }      ],
+      tea: [
+       { name: 'Honey Tea ', price: 75, img: 'https://tealeavz.com/cdn/shop/articles/tea-and-honey.jpg?v=1614300487?text=Chai' },
+        { name: 'Green Tea', price: 60, img: 'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/picture/2021/9/shutterstock_251566309.jpg?text=Green+Tea' },
+        { name: 'Millk Tea ', price: 65, img: 'https://sudachirecipes.com/wp-content/uploads/2025/03/royal-milk-tea-thumb.png?text=Green+Tea' }
+      ],
+      bakery: [
+        { name: 'Blueberry Muffin', price: 80, img: 'https://cdn.loveandlemons.com/wp-content/uploads/2024/08/blueberry-muffin-recipe.jpg?text=Muffin' },
+        { name: 'Croissant', price: 70, img: 'https://static.vecteezy.com/system/resources/previews/023/054/608/non_2x/croissant-illustration-bakery-product-isolated-on-white-background-vector.jpg?text=Croissant' },
+        { name: ' Hamburger Buns ', price: 35, img: 'https://handletheheat.com/wp-content/uploads/2023/04/homemade-burger-buns-SQUARE.jpg?text=Croissant' },
+        { name: ' Bread ', price: 50, img: 'https://assets.bonappetit.com/photos/5c62e4a3e81bbf522a9579ce/16:9/w_4000,h_2250,c_limit/milk-bread.jpg?text=Croissant' },
+        { name: ' Patties ', price: 25, img: 'https://defencebakery.in/cdn/shop/files/Patties_vegetable_714cbc6f-37b6-4c94-919d-70936d7de2f3.jpg?v=1729155605&width=1500.jpg?text=Croissant' }
+      ],
+      cake: [
+        { name: 'Chocolate Truffle Cake', price: 675, img: 'https://bluebowlrecipes.com/wp-content/uploads/2023/08/chocolate-truffle-cake-8844.jpg?v=1675806078' },
+        { name: 'Vanilla Cake', price: 875, img: 'https://png.pngtree.com/png-vector/20240917/ourmid/pngtree-vanilla-cake-png-image_13846821.png?v=1675806078' },
+        { name: 'Birthday Cake', price: 925, img: 'https://pngfile.net/public/uploads/preview/birthday-cake-png-image-4381741462489mw9fhituuy.png?v=1675806078' }
+      ]
+    };
+
+    let cart = [];
+    let currentCategory = '';
+
+    function showItems(category) {
+      currentCategory = category;
+      const container = document.getElementById('menuItems');
+      container.innerHTML = '';
+      menu[category].forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="item-name">${item.name}</div>
+          <div class="price">${item.price} TK</div>
+          <button onclick="addToCart('${item.name}', ${item.price})">কার্টে যোগ করুন</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const totalDisplay = document.getElementById('cartTotal');
+      container.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        container.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name} × ${item.qty}</span>
+            <span>${itemTotal} TK</span>
+            <button onclick="removeItem(${index})">❌</button>
+          </div>
+        `;
+      });
+      totalDisplay.innerText = `মোট: ${total} TK`;
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function sendCartOrder() {
+      if (cart.length === 0) {
+        alert('অনুগ্রহ করে প্রথমে কার্টে আইটেম যোগ করুন।');
+        return;
+      }
+
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+
+      if (!name || !phone || !address) {
+        alert('সব তথ্য পূরণ করুন।');
+        return;
+      }
+
+      const cakeItems = menu['cake'].map(item => item.name);
+      const hasCake = cart.some(item => cakeItems.includes(item.name));
+      const hasNonCake = cart.some(item => !cakeItems.includes(item.name));
+
+      if (hasCake && hasNonCake) {
+        alert('কেক ছাড়া সকল পন্য এক সাথে কেনা যাবে');
+        return;
+      }
+
+      let message = `*Starbucks অর্ডার*\n\n`;
+      message += `নাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}\n\nঅর্ডার বিস্তারিত:\n`;
+
+      cart.forEach(item => {
+        message += `${item.name} × ${item.qty} = ${item.price * item.qty} TK\n`;
+      });
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      message += `\nমোট: ${total} TK\n`;
+
+      const defaultNumber = '8801812243263';
+      const cakeNumber = '8801898217009';
+      const sendNumber = hasCake ? cakeNumber : defaultNumber;
+
+      const encodedMessage = encodeURIComponent(message);
+      const url = `https://wa.me/${sendNumber}?text=${encodedMessage}`;
+
+      window.open(url, '_blank');
+    }
+
+    showItems('coffee');
+  </script>
+
+</body>
+</html>
